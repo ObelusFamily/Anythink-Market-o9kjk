@@ -1,5 +1,4 @@
 'use strict'
-require('newrelic');
 /**
  * New Relic agent configuration.
  *
