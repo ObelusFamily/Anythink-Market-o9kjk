@@ -70,12 +70,14 @@ router.get("/", auth.optional, function(req, res, next) {
       } else if (req.query.favorited) {
         query._id = { $in: [] };
       }
-      
+
 
       return Promise.all([
         Item.find(query)
           .limit(Number(limit))
           .skip(Number(offset))
+          .populate("seller")
+
           .exec(),
         req.payload ? User.findById(req.payload.id) : null
       ]).then(async function(results) {
@@ -85,7 +87,6 @@ router.get("/", auth.optional, function(req, res, next) {
         return res.json({
           items: await Promise.all(
             items.map(async function(item) {
-              item.seller = await User.findById(item.seller);
               return item.toJSONFor(user);
             })
           ),
